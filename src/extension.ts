@@ -103,10 +103,12 @@ export async function activate(context: vscode.ExtensionContext) {
         let list = await next(document, position, context, token);
         let items = (Array.isArray(list) ? list : list.items).map(item => {
           // Gets the prefix used by VSCode when doing fuzzymatch.
-          let prefix = document.getText(
-              new vscode.Range((item.range as vscode.Range).start, position))
-          if (prefix)
-          item.filterText = prefix + '_' + item.filterText;
+          if (item.range) {
+            let prefix = document.getText(
+                new vscode.Range((item.range as vscode.Range).start, position))
+            if (prefix)
+              item.filterText = prefix + '_' + item.filterText;
+          }
           return item;
         })
         return new vscode.CompletionList(items, /*isIncomplete=*/ true);
